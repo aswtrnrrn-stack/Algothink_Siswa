@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithm Lab — From Logic to Code</title>
+<style>
+:root{--navy:#10243e;--blue:#2f6fed;--gold:#d7a843;--bg:#f5f7fb;--card:#fff;--text:#172033;--muted:#667085;--green:#1f9d63;--red:#d64545;--line:#dfe5ee}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--text)}
+header{background:linear-gradient(135deg,#10243e,#193b62);color:#fff;padding:22px 5%;position:sticky;top:0;z-index:10;box-shadow:0 4px 18px #0002}
+.brand{font-size:24px;font-weight:800}.brand span{color:#f0c45b}.subtitle{font-size:13px;opacity:.8;margin-top:4px}
+.progress{display:flex;gap:7px;margin-top:18px}.step{flex:1;height:8px;border-radius:99px;background:#ffffff30}.step.active,.step.done{background:#e8bd52}.step.done{background:#53c58a}
+main{max-width:1200px;margin:28px auto;padding:0 20px}.screen{display:none}.screen.active{display:block}
+h1{font-size:30px;margin:0 0 8px}.lead{color:var(--muted);margin:0 0 24px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 7px 22px #10243e0b}
+.case{cursor:pointer;transition:.2s;border:2px solid transparent}.case:hover{transform:translateY(-3px);box-shadow:0 10px 25px #10243e18}.case.selected{border-color:var(--blue);background:#f0f5ff}.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#edf2ff;color:#3157a6;font-size:12px;font-weight:700}.case h3{margin:13px 0 7px}.case p{color:var(--muted);line-height:1.55}.btn{border:0;border-radius:11px;padding:11px 17px;font-weight:700;cursor:pointer;background:var(--blue);color:#fff}.btn.secondary{background:#e9eef6;color:var(--navy)}.btn.gold{background:var(--gold);color:#172033}.btn:disabled{opacity:.45;cursor:not-allowed}.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap}
+textarea,input,select{width:100%;border:1px solid var(--line);border-radius:12px;padding:13px;font:inherit;outline:none;background:#fff}textarea{min-height:240px;resize:vertical}textarea:focus,input:focus{border-color:var(--blue);box-shadow:0 0 0 3px #2f6fed18}
+.layout{display:grid;grid-template-columns:330px 1fr;gap:18px}.panel-title{font-weight:800;margin-bottom:10px}.casebox{background:#f7f9fc;border-radius:12px;padding:14px;line-height:1.6}
+.feedback{margin-top:15px;border-radius:13px;padding:14px;line-height:1.55}.feedback.good{background:#eaf8f0;color:#16633e}.feedback.warn{background:#fff7df;color:#765b10}.feedback.bad{background:#fff0f0;color:#8c2e2e}
+.hint{font-size:13px;color:var(--muted);margin-top:8px}.chat{height:290px;overflow:auto;background:#f7f9fc;border-radius:14px;padding:14px;margin-bottom:12px}.bubble{max-width:86%;padding:11px 13px;border-radius:15px;margin:8px 0;line-height:1.5}.bot{background:#fff;border:1px solid var(--line)}.user{background:#eaf1ff;margin-left:auto}.row{display:flex;gap:8px}
+.flowwrap{background:#f7f9fc;border:1px dashed #cbd5e1;border-radius:16px;min-height:520px;padding:18px}.palette{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}.shape{padding:11px 13px;background:#fff;border:1px solid #cdd6e3;border-radius:10px;cursor:grab;font-size:13px;font-weight:700;user-select:none;touch-action:none}.shape:hover{border-color:#2f6fed;background:#f4f7ff}.shape.dragging{opacity:.5}.flow.drag-over{background:#eef5ff;border:2px dashed #2f6fed}.flow.drag-over .dropzone{border-color:#2f6fed;color:#2f6fed}.flow{display:flex;flex-direction:column;align-items:center;gap:8px;min-height:440px}.node{min-width:180px;max-width:300px;padding:13px;text-align:center;background:#fff;border:2px solid #2f6fed;box-shadow:0 4px 10px #10243e12;position:relative;cursor:pointer}.node.selected{outline:3px solid #d7a84377}.node.start,.node.end{border-radius:999px;min-width:180px;padding:14px 28px}
+.node.input,.node.output{border-radius:0;transform:skewX(-16deg);padding:13px 24px}
+.node.input .node-label,.node.output .node-label{transform:skewX(16deg);display:inline-block}
+.node.process{border-radius:2px}
+.node.decision{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);width:210px;height:100px;padding:22px 42px;display:flex;align-items:center;justify-content:center;border-radius:0;border:0}
+.node.decision .node-label{max-width:125px}.arrow{font-size:24px;color:#8794a8}.dropzone{border:2px dashed #9aabc1;border-radius:12px;padding:10px;color:#738197;text-align:center;width:220px}.node button{position:absolute;right:-9px;top:-9px;border:0;background:#d64545;color:#fff;border-radius:50%;width:22px;height:22px;cursor:pointer}.flowhint{font-size:12px;color:var(--muted);margin-bottom:12px}
+.code{min-height:290px;font-family:Consolas,monospace;line-height:1.55}.mapping{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.mapitem{padding:12px;border:1px solid var(--line);border-radius:11px;background:#fafbfd}.mapitem b{display:block;margin-bottom:5px}
+.tests{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.test{padding:15px;border:1px solid var(--line);border-radius:13px;background:#fff}.result{font-size:22px;font-weight:800;margin:8px 0}.score{font-size:42px;font-weight:900;color:var(--blue)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(16,36,62,.58);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;z-index:1000}
+.modal-overlay.show{display:flex}
+.modal-card{width:min(460px,100%);background:#fff;border-radius:20px;padding:26px;box-shadow:0 24px 70px rgba(0,0,0,.25);position:relative;animation:modalIn .18s ease-out}
+@keyframes modalIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.modal-close{position:absolute;right:15px;top:12px;border:0;background:#eef2f7;color:#536173;width:34px;height:34px;border-radius:50%;font-size:22px;cursor:pointer}
+.modal-icon{width:52px;height:52px;border-radius:14px;background:#edf3ff;color:#2f6fed;display:flex;align-items:center;justify-content:center;font-size:27px;font-weight:800;margin-bottom:14px}
+.modal-card h2{margin:0 0 7px;color:#172033}.modal-card p{margin:0 0 18px;color:#667085;line-height:1.5}
+.modal-card label{display:block;font-weight:700;font-size:13px;margin-bottom:7px}.modal-card input{font-size:15px}
+.modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.mapping{grid-template-columns:1fr}header{position:static}}
+
+.shape-legend{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0 4px}
+.shape-legend>div{display:grid;grid-template-columns:74px 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;padding:8px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.legend-shape{grid-row:1 / span 2;display:flex;align-items:center;justify-content:center;height:42px;font-size:10px;font-weight:800;border:2px solid var(--blue);background:#fff}
+.legend-shape.terminator{border-radius:999px}
+.legend-shape.parallelogram{transform:skewX(-16deg);margin:0 5px}
+.legend-shape.rectangle{border-radius:2px}
+.legend-shape.diamond{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:0;background:var(--blue);color:#fff}
+.shape-legend b{font-size:11px}.shape-legend small{font-size:10px;color:var(--muted)}
+@media(max-width:800px){.shape-legend{grid-template-columns:1fr}}
+
+.back-page-btn{position:fixed;bottom:18px;left:18px;top:auto;z-index:9999;border:1px solid rgba(255,255,255,.35);background:#fff;color:#17385f;border-radius:12px;padding:9px 15px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 5px 18px rgba(0,0,0,.12);transition:transform .15s ease,box-shadow .15s ease}.back-page-btn:hover{transform:translateY(-1px);box-shadow:0 7px 22px rgba(0,0,0,.16)}.back-page-btn:active{transform:translateY(0)}@media(max-width:700px){.back-page-btn{bottom:10px;left:10px;top:auto;padding:8px 12px;font-size:12px}}
+
+
+/* Branching flowchart UI - jalur tanpa container */
+.flow{position:relative;display:flex;flex-direction:column;align-items:center;gap:10px;min-height:440px}
+.flow-main{display:flex;flex-direction:column;align-items:center;gap:8px;width:100%}
+.flow-branch-wrap{width:100%;margin:4px 0 8px}
+.branch-connector{display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.branch-connector .connector-line{height:28px;width:2px;background:#b8c4d3}
+.branch-grid{display:grid;grid-template-columns:1fr 1fr;gap:46px;position:relative;width:100%;padding:0 22px}
+.branch-grid:before{content:"";position:absolute;left:25%;right:25%;top:0;height:2px;background:#b8c4d3}
+.branch-grid:after{content:"";position:absolute;left:50%;top:0;width:2px;height:22px;background:#b8c4d3;transform:translateX(-50%)}
+.branch-lane{min-width:0;background:transparent;border:0;border-radius:0;padding:22px 4px 8px;min-height:150px;position:relative;display:flex;flex-direction:column;align-items:center}
+.branch-lane.yes{color:#16633e}.branch-lane.no{color:#8c2e2e}
+.branch-label{display:flex;align-items:center;justify-content:center;gap:7px;font-weight:900;font-size:13px;margin-bottom:12px;padding:7px 14px;border-radius:999px;border:1px solid currentColor;background:#fff;position:relative;z-index:1}
+.branch-label .branch-dot{width:9px;height:9px;border-radius:50%;background:currentColor}
+.branch-lane .node{max-width:100%;min-width:180px;color:var(--text);margin:0 auto}
+.branch-lane .node:before{content:"";position:absolute;left:50%;top:-18px;width:2px;height:18px;background:#b8c4d3;transform:translateX(-50%)}
+.branch-lane .arrow{height:22px;display:flex;align-items:center;justify-content:center;color:#8794a8}
+.branch-drop{border:2px dashed #c4cfdd;border-radius:11px;padding:10px 8px;text-align:center;color:#738197;font-size:11px;margin-top:8px;background:#fff}
+.branch-drop b{display:block;color:#536173;margin-bottom:2px}
+.branch-merge{display:flex;flex-direction:column;align-items:center;color:#8794a8;font-size:12px;font-weight:800;margin:4px 0}
+.branch-merge .merge-line{width:2px;height:28px;background:#b8c4d3}
+.branch-instruction{font-size:12px;color:#667085;background:#f7f9fc;border:1px solid #dfe5ee;border-radius:11px;padding:9px 11px;margin-top:4px;line-height:1.45;width:100%}
+@media(max-width:700px){.branch-grid{grid-template-columns:1fr;gap:10px}.branch-grid:before{display:none}}
+
+
+/* Case 4: multi-decision grade flowchart */
+.grade-flow{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px}.grade-top{display:flex;flex-direction:column;align-items:center;gap:8px}.grade-split{display:grid;grid-template-columns:0.8fr 1.7fr;gap:24px;width:100%;align-items:start}.grade-lane{display:flex;flex-direction:column;align-items:center;min-width:0;padding:12px 6px 8px;border-top:3px solid #cbd5e1}.grade-lane.a{border-top-color:#1f9d63}.grade-lane.b{border-top-color:#2f6fed}.grade-lane.c{border-top-color:#d7a843}.grade-lane.d{border-top-color:#d64545}.grade-flow .branch-label{margin-bottom:8px}.grade-flow .node{margin-top:2px;min-width:180px;max-width:100%}.grade-nested{width:100%;margin-top:6px;display:flex;flex-direction:column;align-items:center}.grade-nested-split{display:grid;grid-template-columns:0.8fr 1.2fr;gap:18px;width:100%;align-items:start}.grade-flow .branch-drop{width:100%;max-width:240px}.grade-flow .arrow{height:22px}.grade-flow .grade-nested .grade-lane{width:100%}.grade-merge{display:flex;flex-direction:column;align-items:center;color:#8794a8;font-size:12px;font-weight:800;margin:4px 0}.grade-merge .merge-line{width:2px;height:28px;background:#b8c4d3}@media(max-width:700px){.grade-split{grid-template-columns:1fr}.grade-nested-split{grid-template-columns:1fr}}
+
+/* Case 3: three-condition flowchart */
+.sign-flow{width:100%;display:flex;flex-direction:column;align-items:center;gap:10px}
+.sign-top{display:flex;flex-direction:column;align-items:center;gap:8px}
+.sign-split{display:grid;grid-template-columns:1fr 1.25fr;gap:22px;width:100%;align-items:start}
+.sign-lane{display:flex;flex-direction:column;align-items:center;min-width:0;padding:12px 8px 8px;border-top:3px solid #cbd5e1}
+.sign-lane.positive{border-top-color:#1f9d63}
+.sign-lane.negative{border-top-color:#d7a843}
+.nested-split{display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;margin-top:6px}
+.nested-lane{display:flex;flex-direction:column;align-items:center;padding:10px 5px 5px;border-top:3px solid #cbd5e1}
+.nested-lane.negative{border-top-color:#d64545}
+.nested-lane.zero{border-top-color:#2f6fed}
+.sign-flow .branch-label{margin-bottom:8px}
+.sign-flow .branch-drop{width:100%;max-width:250px}
+.sign-flow .node{margin-top:2px}
+@media(max-width:700px){.sign-split{grid-template-columns:1fr}.nested-split{grid-template-columns:1fr}}
+
+/* Guided pseudocode editor */
+.student-fields{display:grid;grid-template-columns:1fr 160px;gap:10px;margin-bottom:12px}.student-fields label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.saved-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.saved-table{width:100%;border-collapse:collapse;font-size:12px}.saved-table th,.saved-table td{border:1px solid var(--line);padding:8px;text-align:left;vertical-align:top}.saved-table th{background:#f7f9fc}.mini-btn{border:0;border-radius:8px;padding:6px 9px;font-weight:700;cursor:pointer;background:#e9eef6;color:var(--navy)}.danger-btn{background:#fff0f0;color:#8c2e2e}
+.pseudo-guide{display:grid;gap:12px}.pseudo-block{border:1px solid var(--line);border-radius:14px;background:#fbfcfe;padding:13px}.pseudo-block-head{display:flex;align-items:center;gap:9px;margin-bottom:8px}.pseudo-num{width:28px;height:28px;border-radius:8px;background:#edf3ff;color:var(--blue);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:13px}.pseudo-block-head b{font-size:14px}.pseudo-block-head small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.pseudo-block textarea{min-height:62px;font-family:Consolas,monospace;font-size:14px}.pseudo-block textarea.tall{min-height:105px}.pseudo-fixed{background:#eef5ff;border:1px solid #cbdcff;color:#244a91;border-radius:10px;padding:10px 12px;font-family:Consolas,monospace;font-size:14px}.pseudo-output{margin-top:15px}.pseudo-output textarea{min-height:300px;background:#101827;color:#f4f7fb;border-color:#263852;font-family:Consolas,monospace;line-height:1.65;tab-size:4;white-space:pre;overflow:auto}.pseudo-output .syntax-note{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:9px 11px;background:#f7f9fc;border:1px solid var(--line);border-radius:10px;font-size:12px;color:var(--muted)}.pseudo-output .syntax-note b{color:var(--navy)}.pseudo-block textarea{tab-size:4}.structure-check{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}.structure-item{padding:9px 10px;border-radius:10px;background:#f7f9fc;border:1px solid var(--line);font-size:12px}.structure-item.ok{background:#eaf8f0;color:#16633e;border-color:#b9e4cb}.structure-item.no{background:#fff7df;color:#765b10;border-color:#f0d98b}@media(max-width:800px){.structure-check{grid-template-columns:1fr}}
+
+/* Syntax-like pseudocode indentation */
+#pseudoOutput, #pseudocodeOutput, #pseudoPreview, textarea[id*="pseudo"]{
+  font-family: "Consolas","Cascadia Code","Courier New",monospace !important;
+  tab-size: 4;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+
+/* ── AlgoThink student UI refresh: presentation-only; app logic unchanged ── */
+:root{--navy:#10243e;--blue:#2f6fed;--gold:#e6bd55;--bg:#f3f6fb;--card:#fff;--text:#172338;--muted:#6a7689;--green:#16845b;--red:#c94c54;--line:#e2e8f0}
+body{background:radial-gradient(ellipse at 8% 0%,#e4edff 0,transparent 32%),radial-gradient(ellipse at 95% 14%,#fff0d7 0,transparent 26%),#f4f7fc;color:var(--text)}
+header{background:linear-gradient(120deg,#0d1d33 0%,#183d64 70%,#28558a 100%);padding:18px clamp(16px,4vw,42px);box-shadow:0 8px 24px rgba(16,36,62,.15)}
+.brand{letter-spacing:-.5px;font-size:clamp(21px,2.2vw,25px)}.brand span{color:#f2c65e}.subtitle{color:#d6e3f5;letter-spacing:.15px}
+.progress{gap:8px;margin-top:17px}.step{height:7px;background:#ffffff26;transition:background .2s}.step.active{background:#f2c65e;box-shadow:0 0 0 3px #f2c65e20}.step.done{background:#64d6a1}
+main{max-width:1240px;margin:26px auto;padding:0 clamp(14px,2.5vw,26px) 42px}
+h1{letter-spacing:-.7px;color:#152a47;font-size:clamp(25px,3vw,32px)}.lead{line-height:1.65;color:#68778c;max-width:850px}
+.card{border:1px solid #e3eaf4;border-radius:20px;padding:clamp(16px,2vw,22px);box-shadow:0 8px 25px rgba(22,47,84,.055);transition:box-shadow .2s,border-color .2s,transform .2s}
+.grid{gap:16px}.case{position:relative;overflow:hidden;background:linear-gradient(155deg,#fff 0%,#fbfcff 100%);border:1px solid #e0e8f4;border-radius:20px}.case:before{content:"";display:block;height:5px;position:absolute;inset:0 0 auto;background:linear-gradient(90deg,#2f6fed,#7c83ff,#e6bd55)}.case:nth-child(4n+1):before{background:linear-gradient(90deg,#2f6fed,#8eb7ff)}.case:nth-child(4n+2):before{background:linear-gradient(90deg,#14a67a,#a2e6ca)}.case:nth-child(4n+3):before{background:linear-gradient(90deg,#f0b64d,#ffdca0)}.case:nth-child(4n):before{background:linear-gradient(90deg,#9575e8,#d3c5ff)}
+.case:hover{transform:translateY(-3px);border-color:#cbdaf2;box-shadow:0 14px 30px rgba(22,47,84,.10)}.case.selected{background:linear-gradient(145deg,#f0f5ff,#fff);border-color:#6d9aff;box-shadow:0 0 0 3px #2f6fed13}
+.badge{background:#edf3ff;color:#315bb1;border:1px solid #dce7ff;padding:5px 10px}.case:nth-child(4n+2) .badge{background:#e8faf2;color:#167451;border-color:#c9f0df}.case:nth-child(4n+3) .badge{background:#fff5df;color:#8b6114;border-color:#f7e5b8}.case:nth-child(4n) .badge{background:#f2edff;color:#6c50b6;border-color:#e2d9ff}
+.btn{border-radius:12px;padding:11px 17px;background:linear-gradient(135deg,#3476f6,#285fd2);box-shadow:0 4px 10px #2f6fed22;transition:transform .15s,filter .15s}.btn:hover{filter:brightness(1.04);transform:translateY(-1px)}.btn.secondary{background:#edf2f9;color:#263c5b;box-shadow:none;border:1px solid #e0e7f0}.btn.gold{background:linear-gradient(135deg,#f5d578,#e6bd55);color:#24334a;box-shadow:0 4px 10px #e6bd552b}
+input,select,textarea{border-color:#dce5f0;border-radius:12px;background:#fff;color:#1c2c43;transition:border-color .15s,box-shadow .15s}input:focus,select:focus,textarea:focus{border-color:#80a9ff;box-shadow:0 0 0 4px #2f6fed14}
+.layout{gap:16px}.panel-title{color:#19385e}.casebox{background:linear-gradient(135deg,#f0f5ff,#f9fbff);border:1px solid #e0e9f8;border-radius:14px}
+.feedback{border-radius:14px;padding:13px 15px;line-height:1.6}.feedback.good{background:#e9f9f0;border-color:#bfead1;color:#176447}.feedback.warn{background:#fff6df;border-color:#f3df9e;color:#7c5a11}.feedback.bad{background:#fff0ef;border-color:#f4c8c5;color:#9b3330}
+.pseudo-block{border-color:#e0e8f4;border-radius:15px;background:linear-gradient(145deg,#fff,#fbfcff)}.pseudo-block:nth-child(1){background:linear-gradient(145deg,#f1f6ff,#fff)}.pseudo-block:nth-child(2){background:linear-gradient(145deg,#edfbf5,#fff)}.pseudo-block:nth-child(3){background:linear-gradient(145deg,#fff8e8,#fff)}.pseudo-block:nth-child(4){background:linear-gradient(145deg,#f5f0ff,#fff)}.pseudo-num{border-radius:9px;background:#e8efff;color:#2f6fed}.pseudo-fixed{background:#edf4ff;border-color:#d6e4ff;border-radius:12px}.pseudo-output textarea{border-radius:14px;box-shadow:inset 0 1px 4px #0002}.structure-item{border-radius:12px;background:#f7f9fc}.structure-item.ok{background:#eaf9f1;color:#176447;border-color:#c4ecd5}.structure-item.no{background:#fff7e4;color:#795d16;border-color:#f1dfa8}
+.saved-table-wrap{border-color:#e0e8f2;border-radius:14px}.saved-table th{background:#edf3fc;color:#294362}.mini-btn{border-radius:9px}.student-fields{background:#fff;border:1px solid #e5ebf4;border-radius:16px;padding:14px}
+/* Comfortable touch targets and cleaner spacing on smaller screens */
+@media(max-width:800px){header{padding:16px}.progress{gap:5px;margin-top:14px}.step{height:6px}main{margin:20px auto;padding:0 13px 30px}.card{padding:16px}.layout{grid-template-columns:1fr!important}.actions{justify-content:stretch}.actions .btn{flex:1}.pseudo-output textarea{min-height:230px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+
+</style>
+</head>
+<body>
+<button class="back-page-btn" type="button" onclick="goBackPage()" title="Kembali ke halaman sebelumnya">← Kembali</button>
+
+<header>
+  <div class="brand">🧠 Algorithm <span>Lab</span></div>
+  <div class="subtitle">From Logic → Flowchart → Pseudocode → Test</div>
+  <div id="cloudStatus" style="font-size:.75rem;opacity:.85;margin-top:4px"></div>
+  <div class="progress" id="progress"></div>
+</header>
+
+<main>
+<section id="s0" class="screen active">
+  <h1>Pilih Kasus</h1><p class="lead">Satu kasus akan menjadi benang merah dari tiga tahap pembelajaran.</p>
+  <div class="feedback warn" style="margin-bottom:18px"><b>☁️ Mode penelitian:</b> aktivitas pengerjaan dapat dicatat ke database untuk ditampilkan di dashboard peneliti. Jika koneksi belum dikonfigurasi, aplikasi tetap berjalan dengan penyimpanan lokal.</div>
+  <div class="grid" id="caseGrid"></div>
+</section>
+
+<section id="s1" class="screen">
+  <h1>1. Rancang Algoritma</h1><p class="lead">Tuliskan langkah penyelesaian dengan bahasamu sendiri. Jangan khawatir soal format pemrograman.</p>
+  <div class="layout">
+    <div class="card"><div class="panel-title">🧩 Kasus yang dipilih</div><div id="case1" class="casebox"></div><div class="feedback" id="algFeedback"></div></div>
+    <div class="card">
+      <div class="chat" id="chat"></div>
+      <div class="row"><textarea id="algInput" placeholder="Contoh: 1. Masukkan nilai siswa&#10;2. Periksa apakah nilai minimal 75..."></textarea></div>
+      <div class="actions"><button class="btn secondary" onclick="show(0)">Kembali</button><button class="btn" onclick="saveAlgorithm()">Simpan & Lanjut →</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="s2" class="screen">
+  <h1>2. Susun Flowchart</h1><p class="lead">Gunakan algoritmamu sebagai panduan. Simbol mengikuti standar flowchart: Input/Output = jajar genjang, Process = persegi panjang, Decision = belah ketupat, Mulai/Selesai = oval.</p>
+  <div class="layout">
+    <div class="card"><div class="panel-title">🧠 Algoritmamu</div><div id="algPreview" class="casebox" style="white-space:pre-wrap"></div>
+      <div class="panel-title" style="margin-top:18px">🔧 Simbol</div>
+      <div class="palette" id="palette"></div>
+      <div class="shape-legend">
+        <div><span class="legend-shape terminator">MULAI</span><b>Terminator</b><small>Awal / akhir</small></div>
+        <div><span class="legend-shape parallelogram">INPUT</span><b>Input / Output</b><small>Jajar genjang</small></div>
+        <div><span class="legend-shape rectangle">PROCESS</span><b>Process</b><small>Persegi panjang</small></div>
+        <div><span class="legend-shape diamond">IF?</span><b>Decision</b><small>Belah ketupat</small></div>
+      </div>
+      <div class="hint"><b>🖱️ Cara menggunakan:</b> tarik simbol dari kiri ke area flowchart, lalu lepaskan. Jika drag-and-drop tidak tersedia, <b>klik 2×</b> simbol untuk menambahkannya. Klik 2× simbol yang sudah ada untuk mengedit teks.</div>
+    </div>
+    <div class="card">
+      <div class="flowhint">Klik simbol untuk menambahkannya. Untuk percabangan, gunakan DECISION (belah ketupat) dan lengkapi alur YA/TIDAK sesuai kondisi.</div>
+      <div class="flowwrap"><div id="flow" class="flow"></div></div>
+      <div id="flowFeedback"></div>
+      <div class="actions"><button class="btn secondary" onclick="show(1)">← Algoritma</button><button class="btn" onclick="validateFlow()">Validasi Flowchart & Lanjut →</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="s3" class="screen">
+  <h1>3. Terjemahkan ke Pseudocode</h1>
+  <p class="lead">Ubah flowchart menjadi instruksi yang lebih dekat dengan bahasa pemrograman. Susun dari <b>JUDUL → DEKLARASI → INPUT → PROSES → OUTPUT → SELESAI</b>.</p>
+  <div class="layout">
+    <div class="card">
+      <div class="panel-title">🔀 Flowchart kamu</div><div id="flowPreview"></div><div class="mapping" id="mapping"></div>
+      <div class="feedback warn" style="margin-top:15px"><b>🧠 Cara menerjemahkan:</b><br>MULAI → <b>BEGIN</b><br>Data yang dibutuhkan → <b>DEKLARASI</b> dan <b>INPUT</b><br>Perhitungan/kondisi → <b>PROSES</b> (gunakan IF/ELSE jika ada)<br>Hasil → <b>OUTPUT</b><br>SELESAI → <b>END</b></div>
+    </div>
+    <div class="card">
+      <div class="panel-title">✍️ Susun Pseudocode</div>
+      <div class="pseudo-guide">
+        <div class="pseudo-block"><div class="pseudo-block-head"><span class="pseudo-num">1</span><div><b>JUDUL</b><small>Nama program sesuai kasus.</small></div></div><input id="pseudoTitle" placeholder="Contoh: PROGRAM MENGHITUNG LUAS PERSEGI PANJANG"></div>
+        <div class="pseudo-block"><div class="pseudo-block-head"><span class="pseudo-num">2</span><div><b>DEKLARASI</b><small>Tuliskan variabel/data yang digunakan dan, jika bisa, tipenya.</small></div></div><textarea id="pseudoDeclare" placeholder="Contoh: panjang, lebar, luas : INTEGER"></textarea></div>
+        <div class="pseudo-block"><div class="pseudo-block-head"><span class="pseudo-num">3</span><div><b>INPUT</b><small>Data apa yang dimasukkan pengguna?</small></div></div><textarea id="pseudoInput" placeholder="Contoh: INPUT panjang
+INPUT lebar"></textarea></div>
+        <div class="pseudo-block"><div class="pseudo-block-head"><span class="pseudo-num">4</span><div><b>PROSES</b><small>Terjemahkan proses pada flowchart. Untuk kondisi, gunakan IF/ELSE.</small></div></div><textarea id="pseudoProcess" class="tall" placeholder="Contoh: luas ← panjang × lebar"></textarea></div>
+        <div class="pseudo-block"><div class="pseudo-block-head"><span class="pseudo-num">5</span><div><b>OUTPUT</b><small>Hasil apa yang ditampilkan?</small></div></div><textarea id="pseudoOutput" placeholder="Contoh: OUTPUT luas"></textarea></div>
+        <div class="pseudo-block"><div class="pseudo-block-head"><span class="pseudo-num">6</span><div><b>SELESAI</b><small>Gunakan END/SELESAI untuk menutup program.</small></div></div><div class="pseudo-fixed">END</div></div>
+      </div>
+      <div class="pseudo-output"><div class="panel-title">👀 Hasil Pseudocode-mu</div><textarea id="pseudo" class="code" readonly spellcheck="false"></textarea><div class="syntax-note">⌨️ <span><b>Biasakan indentasi seperti syntax.</b> Setiap isi bagian dibuat menjorok 4 spasi. Pada <b>IF/ELSE</b>, baris di dalam kondisi dibuat lebih menjorok agar terbiasa dengan struktur kode sebelum masuk ke bahasa C.</span></div><div class="hint">Pseudocode terbentuk otomatis dari keenam bagian di atas. Perhatikan indentasi dan apakah urutannya sudah sama dengan flowchart.</div><div id="structureCheck" class="structure-check"></div><div id="pseudoFeedback"></div></div>
+      <div class="actions"><button class="btn secondary" onclick="show(2)">← Flowchart</button><button class="btn" id="checkPseudoBtn" type="button">Periksa Pseudocode →</button></div>
+    </div>
+  </div>
+</section>
+
+<section id="s4" class="screen">
+  <h1>🧪 Test & Trace</h1><p class="lead">Uji pseudocode-mu dengan beberapa data. Tujuannya bukan hanya mendapat nilai, tetapi menemukan apakah logikamu konsisten.</p>
+  <div class="card"><div class="tests" id="tests"></div><div id="trace" style="margin-top:18px"></div>
+  <div class="actions"><button class="btn secondary" onclick="show(3)">← Pseudocode</button><button class="btn gold" onclick="finish()">Selesai & Lihat Refleksi</button></div></div>
+</section>
+
+<section id="s5" class="screen">
+  <h1>🏆 Refleksi Belajar</h1><p class="lead">Lihat kembali perjalanan solusi yang kamu buat.</p>
+  <div class="grid">
+    <div class="card"><div class="panel-title">Skor Pseudocode</div><div class="score" id="score"></div><div id="scoreText"></div></div>
+    <div class="card"><div class="panel-title">🔎 Refleksi</div>
+      <p>Apakah flowchart dan pseudocode-mu menggambarkan logika yang sama?</p>
+      <div class="student-fields">
+        <div><label for="studentName">Nama Siswa</label><input id="studentName" type="text" placeholder="Masukkan nama"></div>
+        <div><label for="studentClass">Kelas</label><input id="studentClass" type="text" placeholder="Contoh: X-1"></div>
+      </div>
+      <textarea id="reflection" placeholder="Tuliskan hal yang kamu pahami, kesulitanmu, atau bagian yang ingin kamu perbaiki..."></textarea>
+      <div class="actions" style="justify-content:flex-start;margin-top:10px">
+        <button class="btn" onclick="saveReflection()">💾 Simpan Refleksi</button>
+        <button class="btn secondary" onclick="showSavedData()">📋 Lihat Data Tersimpan</button>
+      </div>
+      <div id="saveStatus"></div>
+      <div id="savedData" style="margin-top:14px"></div>
+    </div>
+  </div>
+  <div class="actions"><button class="btn secondary" onclick="resetLab()">Pilih Kasus Lain</button></div>
+</section>
+
+<div id="nodeModal" class="modal-overlay" aria-hidden="true">
+  <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button type="button" class="modal-close" id="modalClose" aria-label="Tutup">×</button>
+    <div class="modal-icon" id="modalIcon">◇</div>
+    <h2 id="modalTitle">Isi Simbol</h2>
+    <p id="modalDesc">Masukkan keterangan untuk simbol flowchart.</p>
+    <label for="nodeTextInput" id="nodeLabel">Keterangan</label>
+    <input id="nodeTextInput" type="text" autocomplete="off">
+    <div id="branchChoiceWrap" style="display:none;margin-top:14px">
+      <label for="nodeBranchSelect">Jalur setelah DECISION</label>
+      <select id="nodeBranchSelect">
+        <option value="yes">YA — kondisi benar</option>
+        <option value="no">TIDAK — kondisi salah</option>
+      </select>
+      <div class="hint" style="margin-top:6px">Pilih <b>YA/TIDAK</b> untuk proses di dalam cabang, atau pilih <b>Setelah cabang bergabung</b> jika prosesnya sama untuk kedua kondisi.</div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn secondary" id="modalCancel">Batal</button>
+      <button type="button" class="btn" id="modalSave">Tambahkan</button>
+    </div>
+  </div>
+</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.49.0"></script>
+<script>
+const cases=[
+{id:"area",level:"LEVEL 1 · SEQUENCE",title:"Menghitung Luas Persegi Panjang",desc:"Hitung luas berdasarkan panjang dan lebar yang dimasukkan pengguna.",keywords:["panjang","lebar","luas"],kind:"sequence",tests:[{p:10,l:5,expected:"50"},{p:7,l:4,expected:"28"}]},
+{id:"pass",level:"LEVEL 2 · SELECTION",title:"Lulus atau Tidak Lulus",desc:"Tentukan apakah siswa lulus. Nilai minimal 75 dinyatakan Lulus.",keywords:["nilai","75","lulus","tidak lulus"],kind:"pass",tests:[{nilai:80,expected:"Lulus"},{nilai:60,expected:"Tidak Lulus"},{nilai:75,expected:"Lulus"}]},
+{id:"sign",level:"LEVEL 2 · SELECTION",title:"Positif, Negatif, atau Nol",desc:"Tentukan apakah sebuah bilangan positif, negatif, atau nol.",keywords:["angka","positif","negatif","nol"],kind:"sign",tests:[{angka:8,expected:"Positif"},{angka:-3,expected:"Negatif"},{angka:0,expected:"Nol"}]},
+{id:"discount",level:"LEVEL 3 · SELECTION",title:"Diskon Belanja",desc:"Jika total belanja minimal Rp100.000, pelanggan mendapat diskon 10%. Hitung jumlah bayar.",keywords:["belanja","100000","10","diskon"],kind:"discount",tests:[{belanja:150000,expected:"135000"},{belanja:80000,expected:"80000"}]},
+{id:"grade",level:"LEVEL 3 · MULTI DECISION",title:"Kategori Nilai",desc:"90–100 = A, 80–89 = B, 70–79 = C, di bawah 70 = D.",keywords:["nilai","90","80","70","a","b","c","d"],kind:"grade",tests:[{nilai:95,expected:"A"},{nilai:84,expected:"B"},{nilai:75,expected:"C"},{nilai:60,expected:"D"}]},
+{id:"even",level:"LEVEL 4 · LOOPING",title:"Bilangan Genap 1–10",desc:"Tampilkan bilangan genap dari 1 sampai 10 menggunakan perulangan.",keywords:["1","10","genap","ulang","perulangan"],kind:"loop",tests:[{expected:"2, 4, 6, 8, 10"}]}
+];
+const STORAGE_KEY="algorithmLabStudentData_v1";
+// Konfigurasi Supabase untuk halaman siswa (HTML statis).
+// Publishable key memang boleh berada di frontend; batasi akses database dengan RLS.
+// JANGAN memasukkan sb_secret_... atau service_role ke file HTML publik.
+const SUPABASE_URL="https://lafbwdivhewoxrpzodxn.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY="sb_publishable_G9_6MFsNxyUGoyTv8zdxcw_fBVxKqwl";
+const supabaseClient=(window.supabase && !SUPABASE_URL.includes("PASTE_") && !SUPABASE_PUBLISHABLE_KEY.includes("PASTE_") && SUPABASE_PUBLISHABLE_KEY.length > 0) ? window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY) : null;
+let sessionId=null;
+let activityQueue=[];
+let state={case:null,algorithm:"",flow:[],pseudo:"",flowScore:0,pseudoScore:0,currentTest:null};
+
+function cloudConfigured(){return !!supabaseClient;}
+function participantId(){
+ let id=localStorage.getItem("algorithmLabParticipantId");
+ if(!id){id=(crypto.randomUUID?crypto.randomUUID():"p-"+Date.now()+"-"+Math.random().toString(16).slice(2));localStorage.setItem("algorithmLabParticipantId",id);}
+ return id;
+}
+function currentSnapshot(){return {algorithm:state.algorithm,flow:state.flow.map(n=>({type:n.type,text:n.text||n.label||"",branch:n.branch||"main",parentDecision:n.parentDecision??null})),pseudocode:state.pseudo,flowScore:state.flowScore,pseudoScore:state.pseudoScore};}
+function createUuid(){
+ if(window.crypto&&typeof window.crypto.randomUUID==="function")return window.crypto.randomUUID();
+ return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,c=>{const r=Math.random()*16|0;return(c==="x"?r:(r&0x3|0x8)).toString(16);});
+}
+async function startCloudSession(){
+ if(!cloudConfigured()||!state.case)return;
+ if(sessionId)return sessionId;
+ // ID dibuat di browser sehingga INSERT tidak memerlukan SELECT publik pada tabel sessions.
+ const newSessionId=createUuid();
+ const {error}=await supabaseClient.from("sessions").insert({id:newSessionId,participant_code:participantId(),case_id:state.case.id,case_title:state.case.title});
+ if(error){console.warn("Session cloud gagal:",error);return null;}
+ sessionId=newSessionId;
+ await logActivity("CASE_SELECTED",{case_id:state.case.id,case_title:state.case.title,snapshot:currentSnapshot()});
+ await flushActivityQueue();
+ return sessionId;
+}
+async function logActivity(type,data={}){
+ const payload={session_id:sessionId,activity_type:type,activity_data:data};
+ if(!cloudConfigured()||!sessionId){activityQueue.push(payload);return;}
+ const {error}=await supabaseClient.from("activities").insert(payload);
+ if(error){console.warn("Activity log gagal:",error);activityQueue.push(payload);}
+}
+async function flushActivityQueue(){
+ if(!cloudConfigured()||!sessionId||!activityQueue.length)return;
+ const queued=activityQueue.map(x=>({...x,session_id:sessionId}));
+ const {error}=await supabaseClient.from("activities").insert(queued);
+ if(!error)activityQueue=[]; else console.warn("Queue activity gagal:",error);
+}
+
+const $=id=>document.getElementById(id);
+
+function init(){
+ $("cloudStatus").textContent=cloudConfigured()?"☁️ Database aktif":"💾 Mode lokal — Supabase belum dikonfigurasi";
+ $("caseGrid").innerHTML=cases.map((c,i)=>`<div class="card case" onclick="selectCase(${i})"><span class="badge">${c.level}</span><h3>${c.title}</h3><p>${c.desc}</p><button class="btn secondary">Pilih Kasus</button></div>`).join("");
+ $("progress").innerHTML=["Kasus","Algoritma","Flowchart","Pseudocode","Test","Refleksi"].map((x,i)=>`<div class="step" id="p${i}" title="${x}"></div>`).join("");
+}
+async function selectCase(i){
+ state.case=cases[i];state.algorithm="";state.flow=[];state.pseudo="";state.flowScore=0;state.pseudoScore=0;sessionId=null;activityQueue=[];
+ await startCloudSession();
+ $("case1").innerHTML=`<b>${state.case.title}</b><br>${state.case.desc}`;
+ $("chat").innerHTML=`<div class="bubble bot">🤖 Hai! Kita akan memecahkan kasus <b>${state.case.title}</b>.<br><br>Tuliskan langkah penyelesaiannya dengan bahasamu sendiri. Bayangkan kamu sedang memberi instruksi kepada komputer.</div>`;
+ $("algInput").value="";
+ show(1);
+}
+function show(n){
+ document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$("s"+n).classList.add("active");
+ for(let i=0;i<6;i++){let el=$("p"+i);el.className="step"+(i<n?" done":i===n?" active":"");}
+ if(n===2)renderFlow();if(n===3)renderPseudoStage();if(n===4)renderTests();
+ if(state.case)logActivity("STAGE_VIEWED",{stage:n,stage_name:["Kasus","Algoritma","Flowchart","Pseudocode","Test","Refleksi"][n],snapshot:currentSnapshot()});
+ window.scrollTo({top:0,behavior:"smooth"});
+}
+function saveAlgorithm(){
+ const text=$("algInput").value.trim();if(!text){alert("Tulis algoritmamu terlebih dahulu.");return}
+ state.algorithm=text;
+ logActivity("ALGORITHM_SAVED",{algorithm:text,snapshot:currentSnapshot()});
+ const c=state.case;const low=text.toLowerCase();let hits=c.keywords.filter(k=>low.includes(k)).length;
+ let msg=hits>=Math.max(2,Math.ceil(c.keywords.length*.55))?
+ `<div class="feedback good">✅ Algoritmamu sudah memuat beberapa komponen penting. Sekarang kita buktikan dengan flowchart.</div>`:
+ `<div class="feedback warn">💡 Algoritmamu tersimpan. Saat menyusun flowchart, pastikan semua informasi penting dari kasus ikut terwakili.</div>`;
+ $("algFeedback").innerHTML=msg;show(2);
+}
+const symbols=[
+["start","⭕ MULAI","Terminator — awal flowchart"],
+["input","▱ INPUT / OUTPUT","Jajar genjang — masukkan/tampilkan data"],
+["process","▭ PROCESS","Persegi panjang — proses/perhitungan"],
+["decision","◇ DECISION","Belah ketupat — kondisi YA/TIDAK"],
+["end","⭕ SELESAI","Terminator — akhir flowchart"]
+];
+function renderFlow(){
+  $("algPreview").textContent=state.algorithm;
+  $("palette").innerHTML="";
+  symbols.forEach(function(sym){
+    const btn=document.createElement("div");
+    btn.className="shape";btn.setAttribute("draggable","true");
+    btn.dataset.nodeType=sym[0];btn.textContent=sym[1];btn.title="Tarik ke area flowchart";
+    btn.addEventListener("dragstart",function(ev){ev.dataTransfer.setData("text/plain",sym[0]);ev.dataTransfer.effectAllowed="copy";btn.classList.add("dragging");});
+    btn.addEventListener("dragend",function(){btn.classList.remove("dragging");});
+    btn.addEventListener("dblclick",function(ev){ev.preventDefault();addNode(sym[0]);});
+    $("palette").appendChild(btn);
+  });
+
+  const flow=$("flow");flow.innerHTML="";
+  flow.ondragover=function(ev){ev.preventDefault();ev.dataTransfer.dropEffect="copy";flow.classList.add("drag-over");};
+  flow.ondragleave=function(){flow.classList.remove("drag-over");};
+  flow.ondrop=function(ev){ev.preventDefault();flow.classList.remove("drag-over");const type=ev.dataTransfer.getData("text/plain");if(type)addNode(type);};
+
+  if(!state.flow.length){
+    const dz=document.createElement("div");dz.className="dropzone";
+    dz.textContent="Tarik simbol dari kiri ke sini untuk mulai menyusun flowchart. (Klik 2× sebagai alternatif)";
+    flow.appendChild(dz);return;
+  }
+
+  const firstDecision=state.flow.findIndex(n=>n.type==="decision");
+  if(firstDecision===-1){
+    const main=document.createElement("div");main.className="flow-main";
+    state.flow.forEach((n,i)=>{if(i)main.appendChild(makeArrow());main.appendChild(makeNode(n,i));});
+    flow.appendChild(main);return;
+  }
+
+  if(state.case && state.case.kind==="sign"){
+    renderSignFlow(flow,firstDecision);
+    return;
+  }
+
+  if(state.case && state.case.kind==="grade"){
+    renderGradeFlow(flow,firstDecision);
+    return;
+  }
+
+  const main=document.createElement("div");main.className="flow-main";
+  state.flow.slice(0,firstDecision+1).forEach((n,i)=>{if(i)main.appendChild(makeArrow());main.appendChild(makeNode(n,i));});
+  flow.appendChild(main);
+
+  const split=document.createElement("div");split.className="flow-branch-wrap";
+  const connector=document.createElement("div");connector.className="branch-connector";
+  connector.innerHTML='<div class="connector-line"></div>';split.appendChild(connector);
+
+  const grid=document.createElement("div");grid.className="branch-grid";
+  ["yes","no"].forEach(function(branch){
+    const lane=document.createElement("div");lane.className="branch-lane "+branch;
+    const label=document.createElement("div");label.className="branch-label "+branch;
+    label.innerHTML='<span class="branch-dot"></span>'+(branch==="yes"?"YA — kondisi benar":"TIDAK — kondisi salah");
+    lane.appendChild(label);
+    const items=state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>firstDecision&&x.n.parentDecision===firstDecision&&x.n.branch===branch);
+    if(!items.length){
+      const dz=document.createElement("div");dz.className="branch-drop";
+      dz.innerHTML='<b>Jalur belum diisi</b>Tambahkan simbol dan pilih jalur '+(branch==="yes"?"YA":"TIDAK")+'.';
+      lane.appendChild(dz);
+    } else items.forEach(function(x,j){if(j)lane.appendChild(makeArrow());lane.appendChild(makeNode(x.n,x.idx));});
+    grid.appendChild(lane);
+  });
+  split.appendChild(grid);flow.appendChild(split);
+
+  const tail=state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>firstDecision&&(!x.n.parentDecision||x.n.branch==="main"));
+  if(tail.length){
+    const merge=document.createElement("div");merge.className="branch-merge";
+    merge.innerHTML='<div class="merge-line"></div><span>Gabung kembali → proses bersama</span><div>↓</div>';
+    flow.appendChild(merge);
+    const tailWrap=document.createElement("div");tailWrap.className="flow-main";
+    tail.forEach((x,j)=>{if(j)tailWrap.appendChild(makeArrow());tailWrap.appendChild(makeNode(x.n,x.idx));});
+    flow.appendChild(tailWrap);
+  }
+}
+
+function renderSignFlow(flow,firstDecision){
+  const wrap=document.createElement("div");wrap.className="sign-flow";
+
+  const top=document.createElement("div");top.className="sign-top";
+  state.flow.slice(0,firstDecision+1).forEach((n,i)=>{
+    if(i)top.appendChild(makeArrow());
+    top.appendChild(makeNode(n,i));
+  });
+  wrap.appendChild(top);
+
+  const split=document.createElement("div");split.className="sign-split";
+
+  // YA pada decision pertama = POSITIF
+  const pos=document.createElement("div");pos.className="sign-lane positive";
+  pos.appendChild(makeBranchLabel("positive","YA — kondisi benar → POSITIF"));
+  const posItems=state.flow.map((n,idx)=>({n,idx}))
+    .filter(x=>x.idx>firstDecision&&x.n.parentDecision===firstDecision&&x.n.branch==="yes"&&x.n.type!=="decision");
+  if(posItems.length){
+    posItems.forEach((x,j)=>{if(j)pos.appendChild(makeArrow());pos.appendChild(makeNode(x.n,x.idx));});
+  }else{
+    const dz=document.createElement("div");dz.className="branch-drop";
+    dz.innerHTML="<b>OUTPUT POSITIF belum diisi</b>Tambahkan simbol Input/Output.";
+    pos.appendChild(dz);
+  }
+  split.appendChild(pos);
+
+  // TIDAK pada decision pertama = masuk ke decision kedua
+  const neg=document.createElement("div");neg.className="sign-lane negative";
+  neg.appendChild(makeBranchLabel("no","TIDAK — bukan positif"));
+
+  const decisions=state.flow.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision");
+  const second=decisions.find(x=>x.i>firstDecision && x.n.parentDecision===firstDecision && x.n.branch==="no");
+
+  if(second){
+    neg.appendChild(makeArrow());
+    neg.appendChild(makeNode(second.n,second.i));
+
+    const nested=document.createElement("div");nested.className="nested-split";
+
+    const negOut=document.createElement("div");negOut.className="nested-lane negative";
+    negOut.appendChild(makeBranchLabel("no","YA — kondisi benar → NEGATIF"));
+    const negItems=state.flow.map((n,idx)=>({n,idx}))
+      .filter(x=>x.idx>second.i&&x.n.parentDecision===second.i&&x.n.branch==="yes"&&x.n.type!=="decision");
+    if(negItems.length){
+      negItems.forEach((x,j)=>{if(j)negOut.appendChild(makeArrow());negOut.appendChild(makeNode(x.n,x.idx));});
+    }else{
+      const dz=document.createElement("div");dz.className="branch-drop";
+      dz.innerHTML="<b>OUTPUT NEGATIF belum diisi</b>Tambahkan simbol Input/Output.";
+      negOut.appendChild(dz);
+    }
+
+    const zeroOut=document.createElement("div");zeroOut.className="nested-lane zero";
+    zeroOut.appendChild(makeBranchLabel("yes","TIDAK — NOL"));
+    const zeroItems=state.flow.map((n,idx)=>({n,idx}))
+      .filter(x=>x.idx>second.i&&x.n.parentDecision===second.i&&x.n.branch==="no"&&x.n.type!=="decision");
+    if(zeroItems.length){
+      zeroItems.forEach((x,j)=>{if(j)zeroOut.appendChild(makeArrow());zeroOut.appendChild(makeNode(x.n,x.idx));});
+    }else{
+      const dz=document.createElement("div");dz.className="branch-drop";
+      dz.innerHTML="<b>OUTPUT NOL belum diisi</b>Tambahkan simbol Input/Output.";
+      zeroOut.appendChild(dz);
+    }
+
+    nested.appendChild(negOut);nested.appendChild(zeroOut);neg.appendChild(nested);
+  }else{
+    const dz=document.createElement("div");dz.className="branch-drop";
+    dz.innerHTML="<b>Tambahkan DECISION kedua</b><br>Kondisi: apakah angka &lt; 0?";
+    neg.appendChild(dz);
+  }
+
+  split.appendChild(neg);
+  wrap.appendChild(split);
+
+  const ends=state.flow.map((n,idx)=>({n,idx})).filter(x=>x.n.type==="end");
+  if(ends.length){
+    const merge=document.createElement("div");merge.className="branch-merge";
+    merge.innerHTML='<div class="merge-line"></div><span>Semua jalur berakhir di sini</span><div>↓</div>';
+    wrap.appendChild(merge);
+    const endWrap=document.createElement("div");endWrap.className="flow-main";
+    ends.forEach((x,j)=>{if(j)endWrap.appendChild(makeArrow());endWrap.appendChild(makeNode(x.n,x.idx));});
+    wrap.appendChild(endWrap);
+  }
+
+  const note=document.createElement("div");note.className="branch-instruction";
+  note.innerHTML="💡 <b>Kasus 3 membutuhkan 2 DECISION:</b> pertama <b>angka &gt; 0?</b>. Jika TIDAK, lanjut ke <b>angka &lt; 0?</b>. Hasil akhirnya: <b>Positif, Negatif, atau Nol</b>.";
+  wrap.appendChild(note);
+
+  flow.appendChild(wrap);
+}
+function renderGradeFlow(flow,firstDecision){
+  const wrap=document.createElement("div");wrap.className="grade-flow";
+  const decisions=state.flow.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision");
+  const d1=decisions[0],d2=decisions[1],d3=decisions[2];
+
+  const top=document.createElement("div");top.className="grade-top";
+  state.flow.slice(0,firstDecision+1).forEach((n,i)=>{if(i)top.appendChild(makeArrow());top.appendChild(makeNode(n,i));});
+  wrap.appendChild(top);
+
+  const split=document.createElement("div");split.className="grade-split";
+
+  // YA decision pertama → Kategori A
+  const aLane=document.createElement("div");aLane.className="grade-lane a";
+  aLane.appendChild(makeBranchLabel("positive","YA → Kategori A"));
+  const aItems=d1?state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>d1.i&&x.n.parentDecision===d1.i&&x.n.branch==="yes"&&x.n.type!=="decision"&&x.n.type!=="end"):[];
+  if(aItems.length)aItems.forEach((x,j)=>{if(j)aLane.appendChild(makeArrow());aLane.appendChild(makeNode(x.n,x.idx));});
+  else {const dz=document.createElement("div");dz.className="branch-drop";dz.innerHTML="<b>Kategori A belum diisi</b>Tambahkan PROCESS: Kategori = A";aLane.appendChild(dz);}
+  split.appendChild(aLane);
+
+  // TIDAK decision pertama → decision kedua
+  const right=document.createElement("div");right.className="grade-lane";
+  right.appendChild(makeBranchLabel("no","TIDAK → periksa nilai ≥ 80?"));
+  if(d2){right.appendChild(makeArrow());right.appendChild(makeNode(d2.n,d2.i));}
+  else {const dz=document.createElement("div");dz.className="branch-drop";dz.innerHTML="<b>DECISION kedua belum diisi</b>Kondisi: Nilai ≥ 80?";right.appendChild(dz);}
+
+  const nested1=document.createElement("div");nested1.className="grade-nested";
+  const split2=document.createElement("div");split2.className="grade-nested-split";
+
+  // YA decision kedua → Kategori B
+  const bLane=document.createElement("div");bLane.className="grade-lane b";
+  bLane.appendChild(makeBranchLabel("positive","YA → Kategori B"));
+  const bItems=d2?state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>d2.i&&x.n.parentDecision===d2.i&&x.n.branch==="yes"&&x.n.type!=="decision"&&x.n.type!=="end"):[];
+  if(bItems.length)bItems.forEach((x,j)=>{if(j)bLane.appendChild(makeArrow());bLane.appendChild(makeNode(x.n,x.idx));});
+  else {const dz=document.createElement("div");dz.className="branch-drop";dz.innerHTML="<b>Kategori B belum diisi</b>Tambahkan PROCESS: Kategori = B";bLane.appendChild(dz);}
+  split2.appendChild(bLane);
+
+  // TIDAK decision kedua → decision ketiga
+  const lowerRight=document.createElement("div");lowerRight.className="grade-lane";
+  lowerRight.appendChild(makeBranchLabel("no","TIDAK → periksa nilai ≥ 70?"));
+  if(d3){lowerRight.appendChild(makeArrow());lowerRight.appendChild(makeNode(d3.n,d3.i));}
+  else {const dz=document.createElement("div");dz.className="branch-drop";dz.innerHTML="<b>DECISION ketiga belum diisi</b>Kondisi: Nilai ≥ 70?";lowerRight.appendChild(dz);}
+
+  const split3=document.createElement("div");split3.className="grade-nested-split";
+  // YA decision ketiga → C
+  const cLane=document.createElement("div");cLane.className="grade-lane c";
+  cLane.appendChild(makeBranchLabel("positive","YA → Kategori C"));
+  const cItems=d3?state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>d3.i&&x.n.parentDecision===d3.i&&x.n.branch==="yes"&&x.n.type!=="decision"&&x.n.type!=="end"):[];
+  if(cItems.length)cItems.forEach((x,j)=>{if(j)cLane.appendChild(makeArrow());cLane.appendChild(makeNode(x.n,x.idx));});
+  else {const dz=document.createElement("div");dz.className="branch-drop";dz.innerHTML="<b>Kategori C belum diisi</b>Tambahkan PROCESS: Kategori = C";cLane.appendChild(dz);}
+  split3.appendChild(cLane);
+  // TIDAK decision ketiga → D
+  const dLane=document.createElement("div");dLane.className="grade-lane d";
+  dLane.appendChild(makeBranchLabel("no","TIDAK → Kategori D"));
+  const dItems=d3?state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>d3.i&&x.n.parentDecision===d3.i&&x.n.branch==="no"&&x.n.type!=="decision"&&x.n.type!=="end"):[];
+  if(dItems.length)dItems.forEach((x,j)=>{if(j)dLane.appendChild(makeArrow());dLane.appendChild(makeNode(x.n,x.idx));});
+  else {const dz=document.createElement("div");dz.className="branch-drop";dz.innerHTML="<b>Kategori D belum diisi</b>Tambahkan PROCESS: Kategori = D";dLane.appendChild(dz);}
+  split3.appendChild(dLane);
+  lowerRight.appendChild(split3);
+  split2.appendChild(lowerRight);
+  nested1.appendChild(split2);
+  right.appendChild(nested1);
+  split.appendChild(right);
+  wrap.appendChild(split);
+
+  const tail=state.flow.map((n,idx)=>({n,idx})).filter(x=>x.idx>firstDecision&&x.n.branch==="main"&&x.n.type!=="end");
+  const ends=state.flow.map((n,idx)=>({n,idx})).filter(x=>x.n.type==="end");
+  if(tail.length){
+    const merge=document.createElement("div");merge.className="grade-merge";
+    merge.innerHTML='<div class="merge-line"></div><span>Semua jalur bergabung kembali</span><div>↓</div>';
+    wrap.appendChild(merge);
+    const tailWrap=document.createElement("div");tailWrap.className="flow-main";
+    tail.forEach((x,j)=>{if(j)tailWrap.appendChild(makeArrow());tailWrap.appendChild(makeNode(x.n,x.idx));});
+    wrap.appendChild(tailWrap);
+  }
+  if(ends.length){
+    const endWrap=document.createElement("div");endWrap.className="flow-main";
+    ends.forEach((x,j)=>{if(j||tail.length)endWrap.appendChild(makeArrow());endWrap.appendChild(makeNode(x.n,x.idx));});
+    wrap.appendChild(endWrap);
+  }
+  const note=document.createElement("div");note.className="branch-instruction";
+  note.innerHTML="💡 <b>Multi Decision:</b> jika nilai tidak memenuhi kondisi pertama, lanjut ke kondisi kedua. Jika masih tidak memenuhi, lanjut ke kondisi ketiga. Setelah menentukan A/B/C/D, semua jalur bergabung kembali ke <b>Tampilkan kategori nilai</b>.";
+  wrap.appendChild(note);
+  flow.appendChild(wrap);
+}
+
+function makeBranchLabel(kind,text){
+  const label=document.createElement("div");
+  label.className="branch-label "+(kind==="positive"||kind==="yes"?"yes":"no");
+  label.innerHTML='<span class="branch-dot"></span>'+text;
+  return label;
+}
+
+function makeArrow(){const arrow=document.createElement("div");arrow.className="arrow";arrow.textContent="↓";return arrow;}
+function makeNode(n,i){const node=document.createElement("div");node.className="node "+n.type;node.title=(n.type==="start"||n.type==="end")?"Simbol awal/akhir":"Klik 2× untuk mengubah isi";const label=document.createElement("span");label.className="node-label";label.textContent=n.type==="start"?"MULAI":n.type==="end"?"SELESAI":n.text||n.label;node.appendChild(label);const del=document.createElement("button");del.type="button";del.textContent="×";del.title="Hapus simbol";del.addEventListener("click",function(ev){ev.preventDefault();ev.stopPropagation();state.flow.splice(i,1);renderFlow();});node.appendChild(del);if(n.type!=="start"&&n.type!=="end")node.addEventListener("dblclick",function(ev){if(ev.target!==del)openNodeModal(n.type,i);});return node;}
+
+let modalAction=null;
+
+function openNodeModal(type, existingIndex=null){
+ const modal=$("nodeModal"),input=$("nodeTextInput"),title=$("modalTitle"),desc=$("modalDesc"),icon=$("modalIcon"),save=$("modalSave");
+ const branchWrap=$("branchChoiceWrap"),branchSelect=$("nodeBranchSelect");
+ const info={
+  input:{icon:"▱",title:"Input / Output",desc:"Tentukan data yang dimasukkan atau hasil yang ditampilkan.",placeholder:"Tuliskan kondisi"},
+  process:{icon:"▭",title:"Process",desc:"Tuliskan proses atau perhitungan yang dilakukan.",placeholder:"Contoh: status = Lulus"},
+  decision:{icon:"◇",title:"Decision",desc:"Tuliskan kondisi yang menghasilkan dua jalur: YA atau TIDAK.",placeholder:"Contoh: Apakah angka > 0?"}
+ };
+ const item=info[type]||{icon:"",title:"Isi Simbol",desc:"Masukkan keterangan simbol.",placeholder:"Keterangan simbol"};
+ icon.textContent=item.icon;title.textContent=existingIndex===null?"Tambah "+item.title:"Edit "+item.title;
+ desc.textContent=item.desc;input.placeholder=item.placeholder;
+ input.value=existingIndex===null?"":(state.flow[existingIndex]?.text||"");
+ save.textContent=existingIndex===null?"Tambahkan":"Simpan";
+
+ const preceding=existingIndex===null
+   ?state.flow.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision").pop()?.i??-1
+   :state.flow.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision"&&x.i<existingIndex).pop()?.i??-1;
+
+ const showBranch=type!=="decision"&&preceding>=0;
+ branchWrap.style.display=showBranch?"block":"none";
+ if(type==="decision" && preceding>=0 && state.case && state.case.kind==="sign"){
+   desc.textContent="Ini adalah kondisi kedua. Letakkan pada jalur TIDAK dari kondisi pertama.";
+ }
+ branchSelect.innerHTML="<option value=\"yes\">YA — kondisi benar</option><option value=\"no\">TIDAK — kondisi salah</option><option value=\"main\">↘ Setelah cabang bergabung</option>";
+
+ if(state.case&&state.case.kind==="sign"&&preceding>=0){
+   const first=state.flow.findIndex(n=>n.type==="decision");
+   if(preceding>first){
+     branchSelect.innerHTML="<option value=\"yes\">YA — Negatif</option><option value=\"no\">TIDAK — Nol</option><option value=\"main\">↘ Setelah cabang bergabung</option>";
+   }else{
+     branchSelect.innerHTML="<option value=\"yes\">YA — Positif</option><option value=\"no\">TIDAK — lanjut ke kondisi kedua</option><option value=\"main\">↘ Setelah cabang bergabung</option>";
+   }
+ }
+ const existingBranch=existingIndex!==null?state.flow[existingIndex]?.branch:null;
+ branchSelect.value=["yes","no","main"].includes(existingBranch)?existingBranch:"yes";
+ modal.classList.add("show");modal.setAttribute("aria-hidden","false");
+ modalAction={type,existingIndex,precedingDecision:preceding};
+ setTimeout(()=>{input.focus();input.select()},40);
+}
+
+function closeNodeModal(){
+ $("nodeModal").classList.remove("show");
+ $("nodeModal").setAttribute("aria-hidden","true");
+ modalAction=null;
+}
+
+function commitNodeModal(){
+ if(!modalAction)return;
+ const text=$("nodeTextInput").value.trim();
+ if(!text){$("nodeTextInput").focus();return;}
+ const {type,existingIndex}=modalAction;
+ const branchWrap=$("branchChoiceWrap"),branchSelect=$("nodeBranchSelect");
+
+ if(existingIndex===null){
+   const preceding=state.flow.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision").pop()?.i??-1;
+   let branch="main";
+
+   // Jika DECISION baru dibuat setelah DECISION sebelumnya,
+   // pada kasus 3 ia merupakan DECISION lanjutan dari jalur TIDAK.
+   if(type==="decision" && preceding>=0){
+      branch = "no";
+   }else if(branchWrap.style.display!=="none"&&type!=="decision"){
+      branch=branchSelect.value;
+   }
+
+   const isMergedMain=branch==="main";
+   state.flow.push({
+     type:type,text:text,label:type==="input"?"INPUT / OUTPUT":type.toUpperCase(),
+     branch:branch,parentDecision:isMergedMain?null:(preceding>=0?preceding:null)
+   });
+ }else{
+   state.flow[existingIndex].text=text;
+   let selectedBranch=state.flow[existingIndex].branch||"main";
+   if(branchWrap.style.display!=="none"&&type!=="decision"){
+     selectedBranch=branchSelect.value;
+   }
+   const pd=state.flow.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision"&&x.i<existingIndex).pop()?.i??-1;
+   if(selectedBranch==="main"){
+     state.flow[existingIndex].branch="main";
+     state.flow[existingIndex].parentDecision=null;
+   }else{
+     state.flow[existingIndex].branch=selectedBranch;
+     state.flow[existingIndex].parentDecision=pd>=0?pd:null;
+   }
+   if(type==="decision" && pd>=0 && state.case && state.case.kind==="sign"){
+     state.flow[existingIndex].branch="no";
+     state.flow[existingIndex].parentDecision=pd;
+   }
+ }
+ closeNodeModal();renderFlow();
+ logActivity(existingIndex===null||existingIndex===undefined?"FLOW_NODE_ADDED":"FLOW_NODE_EDITED",{index:existingIndex,type,flow:state.flow.map(n=>({type:n.type,text:n.text||n.label||"",branch:n.branch||"main",parentDecision:n.parentDecision??null})),snapshot:currentSnapshot()});
+}
+
+function addNode(type){
+ if(type==="start"||type==="end"){state.flow.push({type:type,text:type==="start"?"MULAI":"SELESAI",label:type==="start"?"MULAI":"SELESAI",branch:"main"});renderFlow();logActivity("FLOW_NODE_ADDED",{type,flow:state.flow,snapshot:currentSnapshot()});}
+ else openNodeModal(type,null);
+}
+
+$("modalSave").addEventListener("click",commitNodeModal);
+$("modalCancel").addEventListener("click",closeNodeModal);
+$("modalClose").addEventListener("click",closeNodeModal);
+$("nodeModal").addEventListener("click",function(e){
+ if(e.target===$("nodeModal"))closeNodeModal();
+});
+$("nodeTextInput").addEventListener("keydown",function(e){
+ if(e.key==="Enter"){e.preventDefault();commitNodeModal();}
+ if(e.key==="Escape"){e.preventDefault();closeNodeModal();}
+});
+
+function removeNode(e,i){e.stopPropagation();const removed=state.flow[i];state.flow.splice(i,1);renderFlow();logActivity("FLOW_NODE_REMOVED",{index:i,removed,flow:state.flow,snapshot:currentSnapshot()})}
+function normalizeBranches(){
+ state.flow.forEach((n,i)=>{
+   if(n.type==="start"||n.type==="end"){n.branch="main";n.parentDecision=null;return;}
+   const prior=state.flow.map((x,j)=>({x,j})).filter(z=>z.x.type==="decision"&&z.j<i).pop();
+   if(prior){
+     if(n.branch==="main"){
+       n.parentDecision=null;
+     }else{
+       if(n.parentDecision==null||n.parentDecision>=i)n.parentDecision=prior.j;
+       if(n.branch!=="yes"&&n.branch!=="no")n.branch="yes";
+     }
+   }else{
+     n.parentDecision=null;n.branch="main";
+   }
+ });
+}
+
+
+// Umpan balik validasi yang dapat digunakan ulang di semua tahap/kasus.
+function showValidationResult(containerId, score, target, notes, nextStage, label){
+ const box=$(containerId);
+ const passed=score>=target;
+ const level=passed?"good":score>=Math.max(0,target-15)?"warn":"bad";
+ const motivation=passed
+  ?"🌟 Luar biasa! Usaha dan kerja kerasmu membuahkan hasil. Terus tantang dirimu untuk belajar hal baru!"
+  :"💪 Kerja bagus sudah mencoba! Kesalahan adalah bagian dari proses belajar. Periksa kembali petunjuk di bawah, perbaiki bagian yang diperlukan, lalu coba lagi ya!";
+ const details=notes.length?notes.map(x=>"• "+escapeHTML(String(x))).join("<br>"):"Semua komponen utama sudah sesuai dengan kriteria validasi.";
+ const nextLabel=nextStage===3?"Lanjut ke Pseudocode →":nextStage===4?"Lanjut ke Test & Trace →":"Lanjut ke Tahap Berikutnya →";
+ box.innerHTML=`<div class="feedback ${level}" role="status" aria-live="polite">
+  <b>Hasil validasi ${escapeHTML(label)}: ${score}/100</b><br>
+  <b>${passed?"Target tercapai":"Belum mencapai target"} (target: ${target}/100)</b><br><br>
+  <b>Catatan dan saran perbaikan:</b><br>${details}<br><br><b>💬 Pesan untukmu:</b><br>${motivation}
+  ${passed?`<div class="actions" style="justify-content:flex-start"><button class="btn" type="button" onclick="show(${nextStage})">${nextLabel}</button></div>`:`<p style="margin:12px 0 0"><b>Langkah berikutnya:</b> gunakan catatan di atas untuk memperbaiki jawaban, lalu tekan tombol validasi kembali.</p>`}
+ </div>`;
+ if(passed) box.scrollIntoView({behavior:"smooth",block:"nearest"});
+}
+
+function validateFlow(){
+ normalizeBranches();
+ const f=state.flow,c=state.case;let score=0,notes=[];
+ const types=f.map(n=>n.type),inputs=f.filter(n=>n.type==="input");
+ if(f[0]?.type==="start")score+=15;else notes.push("Flowchart sebaiknya dimulai dengan MULAI.");
+ if(f.some(n=>n.type==="end"))score+=15;else notes.push("Tambahkan SELESAI.");
+ if(inputs.length)score+=20;else notes.push("Tambahkan INPUT.");
+
+ if(c.kind==="sign"){
+   const decisions=f.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision");
+   const d1=decisions[0],d2=decisions[1];
+   const d1t=(d1?.n.text||"").toLowerCase(),d2t=(d2?.n.text||"").toLowerCase();
+   if(d1)score+=10;else notes.push("Tambahkan DECISION pertama: apakah angka > 0?");
+   if(d2)score+=10;else notes.push("Tambahkan DECISION kedua pada jalur TIDAK: apakah angka < 0?");
+   const d1ok=d1&&(/angka|bilangan/.test(d1t))&&(/>|lebih dari/.test(d1t))&&/0/.test(d1t);
+   const d2ok=d2&&(/angka|bilangan/.test(d2t))&&(/</.test(d2t))&&/0/.test(d2t);
+   if(d1ok)score+=10;else notes.push("Kondisi pertama harus memeriksa angka > 0.");
+   if(d2ok)score+=10;else notes.push("Kondisi kedua harus memeriksa angka < 0.");
+   const secondNested=d1&&d2&&d2.parentDecision===d1.i&&d2.branch==="no";
+   if(secondNested)score+=10;else notes.push("DECISION kedua harus berada pada jalur TIDAK dari DECISION pertama.");
+   const all=f.map(n=>(n.text||"").toLowerCase());
+   const pos=all.some(t=>/\bpositif\b/.test(t)&&!/tidak\s+positif/.test(t));
+   const neg=all.some(t=>/\bnegatif\b/.test(t));
+   const zero=all.some(t=>/\bnol\b/.test(t)||/\b0\b/.test(t));
+   if(pos)score+=7;else notes.push("Tambahkan OUTPUT untuk Positif.");
+   if(neg)score+=7;else notes.push("Tambahkan OUTPUT untuk Negatif.");
+   if(zero)score+=6;else notes.push("Tambahkan OUTPUT untuk Nol.");
+   state.flowScore=Math.min(100,score);
+   logActivity("FLOW_VALIDATED",{score:state.flowScore,notes,flow:state.flow,snapshot:currentSnapshot()});
+ }else if(c.kind==="grade"){
+   const decisions=f.map((n,i)=>({n,i})).filter(x=>x.n.type==="decision");
+   const d1=decisions[0],d2=decisions[1],d3=decisions[2];
+   const txt=i=>((i?.n?.text)||"").toLowerCase();
+   const d1t=txt(d1),d2t=txt(d2),d3t=txt(d3);
+   if(d1)score+=5;else notes.push("Tambahkan DECISION pertama: Nilai ≥ 90?");
+   if(d2)score+=5;else notes.push("Tambahkan DECISION kedua pada jalur TIDAK: Nilai ≥ 80?");
+   if(d3)score+=5;else notes.push("Tambahkan DECISION ketiga pada jalur TIDAK: Nilai ≥ 70?");
+   const d1ok=d1&&/nilai|angka/.test(d1t)&&/(>=|≥|90)/.test(d1t);
+   const d2ok=d2&&/nilai|angka/.test(d2t)&&/(>=|≥|80)/.test(d2t);
+   const d3ok=d3&&/nilai|angka/.test(d3t)&&/(>=|≥|70)/.test(d3t);
+   if(d1ok)score+=5;else notes.push("Kondisi pertama harus memeriksa Nilai ≥ 90.");
+   if(d2ok)score+=5;else notes.push("Kondisi kedua harus memeriksa Nilai ≥ 80.");
+   if(d3ok)score+=5;else notes.push("Kondisi ketiga harus memeriksa Nilai ≥ 70.");
+   const nest2=d1&&d2&&d2.parentDecision===d1.i&&d2.branch==="no";
+   const nest3=d2&&d3&&d3.parentDecision===d2.i&&d3.branch==="no";
+   if(nest2&&nest3)score+=10;else notes.push("Urutan DECISION harus bertingkat melalui jalur TIDAK: 90 → 80 → 70.");
+   const all=f.map(n=>(n.text||"").toLowerCase());
+   const a=all.some(t=>/kategori\s*=\s*a\b|kategori\s+a\b|\ba\b/.test(t)&&/kategori/.test(t));
+   const b=all.some(t=>/kategori\s*=\s*b\b|kategori\s+b\b/.test(t));
+   const cc=all.some(t=>/kategori\s*=\s*c\b|kategori\s+c\b/.test(t));
+   const d=all.some(t=>/kategori\s*=\s*d\b|kategori\s+d\b/.test(t));
+   if(a)score+=2.5;else notes.push("Tambahkan PROCESS untuk Kategori = A pada jalur YA pertama.");
+   if(b)score+=2.5;else notes.push("Tambahkan PROCESS untuk Kategori = B pada jalur YA kedua.");
+   if(cc)score+=2.5;else notes.push("Tambahkan PROCESS untuk Kategori = C pada jalur YA ketiga.");
+   if(d)score+=2.5;else notes.push("Tambahkan PROCESS untuk Kategori = D pada jalur TIDAK ketiga.");
+   state.flowScore=Math.min(100,score);
+ }else{
+   const inputText=inputs.map(n=>(n.text||"").toLowerCase());
+   const outputs=inputText.filter(t=>/output|tampil|menampilkan|hasil|cetak|print|lulus|tidak lulus|positif|negatif|nol|bayar|diskon/.test(t));
+   const d=f.find(n=>n.type==="decision"),di=f.indexOf(d),dt=(d?.text||"").toLowerCase();
+   const yes=d?f.filter((n,i)=>i>di&&n.parentDecision===di&&n.branch==="yes"&&n.type!=="end"):[];
+   const no=d?f.filter((n,i)=>i>di&&n.parentDecision===di&&n.branch==="no"&&n.type!=="end"):[];
+   if(c.kind==="sequence"){
+     if(types.includes("process"))score+=25;else notes.push("Tambahkan PROCESS untuk perhitungan.");
+     if(outputs.length)score+=25;else notes.push("Tambahkan OUTPUT.");
+   }else{
+     if(d)score+=20;else notes.push("Tambahkan DECISION.");
+     if(d&&yes.length&&no.length)score+=5;else if(d)notes.push("DECISION harus memiliki jalur YA dan TIDAK.");
+     let semantic=false;
+     if(c.kind==="pass")semantic=/nilai/.test(dt)&&/(>=|≥|75)/.test(dt)&&yes.some(n=>/\blulus\b/.test((n.text||"").toLowerCase())&&!/tidak\s*lulus/.test((n.text||"").toLowerCase()))&&no.some(n=>/tidak\s*lulus/.test((n.text||"").toLowerCase()));
+     else if(c.kind==="discount")semantic=/(100000|100\.000)/.test(dt)&&/belanja|total/.test(dt);
+     else if(c.kind==="loop")semantic=/for|while|ulang|hingga|sampai/.test(f.map(n=>(n.text||"").toLowerCase()).join(" "));
+     else semantic=outputs.length>0;
+     if(semantic)score+=25;else notes.push("Periksa kembali makna kondisi dan hasil setiap jalur sesuai kasus.");
+   }
+   state.flowScore=Math.min(100,score);
+ }
+ showValidationResult("flowFeedback",state.flowScore,65,notes,3,"Flowchart");
+}
+
+function renderPseudoStage(){
+  $("flowPreview").innerHTML=state.flow.map((n,i)=>{
+    const typeLabel={start:"MULAI",input:"INPUT / OUTPUT",process:"PROCESS",decision:"DECISION",end:"SELESAI"}[n.type]||n.type.toUpperCase();
+    return `<div style="padding:8px 10px;margin:4px 0;background:#f7f9fc;border-radius:8px"><b>${i+1}.</b> <span class="badge">${typeLabel}</span> ${escapeHTML(n.text||n.label||"")}</div>`;
+  }).join("")||"<i>Belum ada flowchart.</i>";
+  $("mapping").innerHTML=`<div class="mapitem"><b>MULAI</b>→ BEGIN</div><div class="mapitem"><b>Input / Output</b>→ INPUT / OUTPUT</div><div class="mapitem"><b>Process</b>→ operasi/perhitungan</div><div class="mapitem"><b>Decision</b>→ IF / ELSE</div><div class="mapitem"><b>SELESAI</b>→ END</div>`;
+  ["pseudoTitle","pseudoDeclare","pseudoInput","pseudoProcess","pseudoOutput"].forEach(id=>{const el=$(id);if(el&&!el.dataset.bound){el.addEventListener("input",updatePseudoPreview);el.dataset.bound="1";bindSyntaxIndent(el);}});
+  updatePseudoPreview();
+}
+function bindSyntaxIndent(el){
+  if(el.dataset.indentBound) return;
+  el.dataset.indentBound="1";
+  el.addEventListener("keydown",function(e){
+    if(e.key!=="Enter" || e.shiftKey || e.ctrlKey || e.altKey) return;
+    const start=this.selectionStart;
+    const before=this.value.slice(0,start);
+    const currentLine=before.split(/\r?\n/).pop()||"";
+    const base=(currentLine.match(/^\s*/) || [""])[0];
+    const trimmed=currentLine.trim().toUpperCase();
+    let nextIndent=base;
+    if(/^(IF\b|JIKA\b)/.test(trimmed) && /(THEN|MAKA)\b/.test(trimmed)) nextIndent+= "    ";
+    if(/^(ELSE|ELSE IF|JIKA TIDAK)\b/.test(trimmed)) nextIndent+= "    ";
+    e.preventDefault();
+    const insert="\n"+nextIndent;
+    this.setRangeText(insert,start,this.selectionEnd,"end");
+    updatePseudoPreview();
+  });
+}
+
+function escapeHTML(value){return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));}
+function normalizePseudo(s){return s.toLowerCase().replace(/[×✕]/g,"x").replace(/[←↔]/g,"=").replace(/rp\s*/g,"").replace(/\./g,"").replace(/,/g,"").replace(/\s+/g," ").trim();}
+function indentBlock(text, level=1){
+  const pad="    ".repeat(level);
+  return (text||"").split(/\r?\n/).map(line=>{
+    const clean=line.trim();
+    return clean ? pad+clean : "";
+  }).join("\n");
+}
+function formatProcessBlock(text){
+  const lines=(text||"").split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+  if(!lines.length)return "    [isi proses/perhitungan/kondisi]";
+  let level=1;
+  const out=[];
+  for(const line of lines){
+    const u=line.toUpperCase();
+    if(/^(ELSE|ELSE IF|END IF|ENDIF|AKHIR JIKA)\b/.test(u)) level=Math.max(1,level-1);
+    out.push("    ".repeat(level)+line);
+    if(/^(IF\b|JIKA\b)/.test(u) && /(THEN|MAKA)\b/.test(u)) level++;
+    if(/^(ELSE|ELSE IF|JIKA TIDAK)\b/.test(u)) level++;
+  }
+  return out.join("\n");
+}
+function updatePseudoPreview(){
+  const title=$("pseudoTitle").value.trim(),declaration=$("pseudoDeclare").value.trim(),input=$("pseudoInput").value.trim(),process=$("pseudoProcess").value.trim(),output=$("pseudoOutput").value.trim();
+  const titleText=title||"[isi judul program]";
+  const declarationText=indentBlock(declaration||"[isi variabel/data yang digunakan]");
+  const inputText=indentBlock(input||"[isi data yang dimasukkan]");
+  const processText=formatProcessBlock(process);
+  const outputText=indentBlock(output||"[isi hasil yang ditampilkan]");
+  $("pseudo").value=[
+    "JUDUL",
+    "    PROGRAM "+titleText.replace(/^PROGRAM\s+/i,"") ,
+    "",
+    "DEKLARASI",
+    declarationText,
+    "",
+    "INPUT",
+    inputText,
+    "",
+    "PROSES",
+    processText,
+    "",
+    "OUTPUT",
+    outputText,
+    "",
+    "END"
+  ].join("\n");
+}
+function checkPseudo(){
+ try{
+  updatePseudoPreview();
+  const title=$("pseudoTitle").value.trim(), declaration=$("pseudoDeclare").value.trim(), input=$("pseudoInput").value.trim(), process=$("pseudoProcess").value.trim(), output=$("pseudoOutput").value.trim(), c=state.case;
+  if(!c){showInlineFeedback("pseudoFeedback","Kasus belum dipilih.","bad");return;}
+  const low={title:normalizePseudo(title),declaration:normalizePseudo(declaration),input:normalizePseudo(input),process:normalizePseudo(process),output:normalizePseudo(output)};
+  const allPseudo=normalizePseudo(process+" "+output);
+  let score=0; const checks=[],notes=[];
+  const check=(label,ok,points)=>{checks.push([label,!!ok]);if(ok)score+=points;};
+  check("JUDUL",!!title,10); check("DEKLARASI",!!declaration,10); check("INPUT",!!input,10); check("PROSES",!!process,10);
+  check("OUTPUT",!!output||/\b(output|tampilkan|print|cetak)\b/.test(allPseudo),10); check("SELESAI",true,10);
+  const titleWords=(c.title.toLowerCase().match(/[a-z]+/g)||[]).filter(w=>w.length>3);
+  if(titleWords.some(w=>low.title.includes(w)))score+=5;else notes.push("JUDUL sebaiknya menggambarkan kasus yang dipilih.");
+  const reqDecl={sequence:["panjang","lebar","luas"],pass:["nilai"],sign:["angka"],discount:["belanja","diskon"],grade:["nilai"],loop:["i"]}[c.kind]||[];
+  if(!reqDecl.length||reqDecl.filter(x=>low.declaration.includes(x)).length>=Math.min(2,reqDecl.length))score+=5;else notes.push(`DEKLARASI belum menunjukkan variabel penting: ${reqDecl.join(", ")}.`);
+  const reqInput={sequence:["panjang","lebar"],pass:["nilai"],sign:["angka"],discount:["belanja"],grade:["nilai"],loop:[]}[c.kind]||[];
+  if(reqInput.length===0?!!input:reqInput.every(x=>low.input.includes(x)))score+=5;else notes.push(`INPUT belum lengkap. Data yang diperlukan: ${reqInput.join(" dan ")}.`);
+  let processOK=false;
+  if(c.kind==="sequence")processOK=/luas\s*=\s*(panjang\s*x\s*lebar|lebar\s*x\s*panjang)/.test(low.process);
+  else if(c.kind==="pass")processOK=/if/.test(low.process)&&/nilai\s*(>=|>)\s*75/.test(low.process)&&/else|jika tidak/.test(low.process);
+  else if(c.kind==="sign"){
+   const first=/\b(if|jika)\b[^\n]*angka\s*>\s*0/.test(low.process);
+   const second=/\belse\s+if\b[^\n]*angka\s*<\s*0/.test(low.process)||/\belseif\b[^\n]*angka\s*<\s*0/.test(low.process)||/jika\s+tidak[^\n]*angka\s*<\s*0/.test(low.process);
+   const zero=/\belse\b/.test(low.process)||/jika\s+tidak/.test(low.process);
+   processOK=first&&second&&zero&&/positif/.test(low.process)&&/negatif/.test(low.process)&&/nol/.test(low.process);
+  } else if(c.kind==="discount")processOK=/if/.test(low.process)&&/100000/.test(low.process)&&/>=/.test(low.process)&&(/10\s*%/.test(low.process)||/0\.1/.test(low.process))&&/diskon|bayar|belanja/.test(low.process);
+  else if(c.kind==="grade")processOK=/if/.test(low.process)&&/90/.test(low.process)&&/80/.test(low.process)&&/70/.test(low.process);
+  else if(c.kind==="loop")processOK=/(for|while|ulang|repeat|perulangan)/.test(low.process)&&/1/.test(low.process)&&/10/.test(low.process)&&/(genap|mod|%)/.test(low.process);
+  if(processOK)score+=5;else notes.push("PROSES belum sepenuhnya mencerminkan logika pada kasus/flowchart.");
+  checks.push(["LOGIKA PROSES",processOK]);
+  let outputOK=false;
+  if(c.kind==="sequence")outputOK=/luas/.test(allPseudo);
+  else if(c.kind==="pass")outputOK=/lulus/.test(allPseudo);
+  else if(c.kind==="sign"){
+   const hasOutput=/\b(output|tampilkan|print|cetak)\b/.test(allPseudo);
+   const hasPositive=/positif/.test(allPseudo),hasNegative=/negatif/.test(allPseudo),hasZero=/nol/.test(allPseudo);
+   outputOK=hasOutput&&hasPositive&&hasNegative&&hasZero;
+  } else if(c.kind==="discount")outputOK=/(bayar|jumlah|harga)/.test(allPseudo);
+  else if(c.kind==="grade")outputOK=/\ba\b/.test(allPseudo)&&/\bb\b/.test(allPseudo)&&/\bc\b/.test(allPseudo)&&/\bd\b/.test(allPseudo);
+  else if(c.kind==="loop")outputOK=/(genap|output|print|tampil|cetak)/.test(allPseudo);
+  if(outputOK)score+=5;else notes.push("OUTPUT belum menunjukkan hasil yang harus ditampilkan.");
+  checks.push(["MAKNA OUTPUT",outputOK]);
+  if(c.kind==="sign"&&/\binput\s+bilangan\b/.test(low.input))notes.push("Catatan: BILANGAN tidak perlu di-INPUT jika digunakan sebagai variabel hasil.");
+  if(c.kind==="sign"&&/\bthan\b/.test(low.process))notes.push("Catatan sintaks: gunakan THEN/MAKA, bukan THAN.");
+  state.pseudo=$("pseudo").value;state.pseudoScore=Math.min(100,score);
+  logActivity("PSEUDOCODE_CHECKED",{score:state.pseudoScore,pseudocode:state.pseudo,snapshot:currentSnapshot()});
+  $("structureCheck").innerHTML=checks.map(([label,ok])=>`<div class="structure-item ${ok?'ok':'no'}">${ok?'✓':'○'} <b>${label}</b></div>`).join("");
+  showValidationResult("pseudoFeedback",state.pseudoScore,75,notes,4,"Pseudocode");
+ }catch(err){console.error("Gagal memeriksa pseudocode:",err);const box=$("pseudoFeedback");if(box)box.innerHTML='<div class="feedback bad"><b>Periksa Pseudocode gagal dijalankan.</b><br>Silakan periksa kembali isianmu lalu klik tombol sekali lagi.</div>';}
+}
+
+// Tombol pemeriksaan menggunakan event listener agar tetap responsif setelah siswa memperbaiki jawaban.
+function bindPseudoCheckButton(){
+  const btn=$("checkPseudoBtn");
+  if(!btn || btn.dataset.bound) return;
+  btn.dataset.bound="1";
+  btn.addEventListener("click", function(e){
+    e.preventDefault();
+    checkPseudo();
+  });
+}
+
+// Pastikan fungsi juga tersedia untuk pemanggilan dari browser/debugging.
+window.checkPseudo=checkPseudo;
+bindPseudoCheckButton();
+
+function renderTests(){
+ $("tests").innerHTML=state.case.tests.map((t,i)=>`<div class="test"><b>Test ${i+1}</b><p>${Object.entries(t).filter(([k])=>k!=="expected").map(([k,v])=>`${k}: <b>${v}</b>`).join("<br>")||"Kasus batas/perulangan"}</p><small>Hasil yang diharapkan</small><div class="result">${t.expected}</div><button class="btn" onclick="runTest(${i})">▶ Jalankan</button></div>`).join("");
+}
+function runTest(i){
+ const t=state.case.tests[i];state.currentTest=i;
+ let result="";
+ if(state.case.kind==="pass")result=t.nilai>=75?"Lulus":"Tidak Lulus";
+ else if(state.case.kind==="sign")result=t.angka>0?"Positif":t.angka<0?"Negatif":"Nol";
+ else if(state.case.kind==="sequence")result=String(t.p*t.l);
+ else if(state.case.kind==="discount")result=String(t.belanja>=100000?Math.round(t.belanja*.9):t.belanja);
+ else if(state.case.kind==="grade")result=t.nilai>=90?"A":t.nilai>=80?"B":t.nilai>=70?"C":"D";
+ else if(state.case.kind==="loop")result="2, 4, 6, 8, 10";
+ const ok=result===t.expected;
+ logActivity("TEST_RUN",{test_index:i,input:t,result,expected:t.expected,correct:ok,snapshot:currentSnapshot()});
+ $("trace").innerHTML=`<div class="feedback ${ok?'good':'bad'}"><b>TRACE TEST ${i+1}</b><br>Input → diproses sesuai logika kasus → Output: <strong>${result}</strong><br>${ok?"✅ Sesuai dengan hasil yang diharapkan.":"❌ Belum sesuai. Kembali ke pseudocode dan periksa logikanya."}<hr><b>Alur:</b> MULAI → INPUT → PROSES/DECISION → OUTPUT → SELESAI</div>`;
+}
+// ── Fungsi helper yang hilang ──────────────────────────────────────────────
+
+function showInlineFeedback(elId, msg, type){
+  const el=$(elId);
+  if(!el)return;
+  el.innerHTML=`<div class="feedback ${type}" style="margin-top:10px">${msg}</div>`;
+}
+
+function escapeHtml(value){
+  return String(value??'').replace(/[&<>"']/g, ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+async function showSavedData(){
+  const container=$('savedData');
+  if(!container)return;
+  const records=getSavedRecords();
+  if(!records.length){
+    container.innerHTML='<div class="feedback warn">Data lokal pada perangkat ini belum tersedia. Data yang sudah terkirim ke Supabase dapat dilihat oleh admin melalui dashboard peneliti.</div>';
+    return;
+  }
+  const rows=records.slice().reverse().map(function(r,idx){
+    const date=new Date(r.timestamp).toLocaleString('id-ID');
+    const ref=escapeHtml(r.refleksi||'').replace(/\n/g,'<br>');
+    return '<tr><td>'+(records.length-idx)+'</td><td>'+escapeHtml(r.nama)+'<br><small>'+escapeHtml(r.kelas)+'</small></td><td>'+escapeHtml(r.kasus)+'</td><td><b>'+Number(r.skorAkhir||0)+'/100</b><br><small>Flow: '+Number(r.skorFlowchart||0)+' · Pseudo: '+Number(r.skorPseudocode||0)+'</small></td><td>'+date+'</td><td style="max-width:240px;word-break:break-word">'+ref+'</td><td><button class="mini-btn danger-btn" onclick="deleteRecord('+Number(r.id)+')">Hapus lokal</button></td></tr>';
+  }).join('');
+  container.innerHTML='<div class="saved-table-wrap"><div style="padding:8px 12px;background:#eef5ff;color:#244a91;font-size:12px;font-weight:700;border-radius:8px 8px 0 0">💾 Data lokal browser ('+records.length+' entri)</div><table class="saved-table"><thead><tr><th>No</th><th>Siswa</th><th>Kasus</th><th>Skor</th><th>Waktu</th><th>Refleksi</th><th>Aksi</th></tr></thead><tbody>'+rows+'</tbody></table></div><div class="hint" style="margin-top:6px">Data cloud tidak ditampilkan pada halaman siswa. Untuk privasi, seluruh submission Supabase dibaca melalui dashboard admin.</div>';
+}
+
+// ── Akhir fungsi helper ────────────────────────────────────────────────────
+
+function getSavedRecords(){
+ try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");}
+ catch(e){console.warn("Storage tidak dapat dibaca",e);return [];}
+}
+
+async function saveReflection(){
+ const name=$("studentName").value.trim();
+ const studentClass=$("studentClass").value.trim();
+ const reflection=$("reflection").value.trim();
+ if(!name){showInlineFeedback("saveStatus","Masukkan nama siswa terlebih dahulu.","bad");$("studentName").focus();return;}
+ if(!reflection){showInlineFeedback("saveStatus","Tuliskan refleksi terlebih dahulu.","bad");$("reflection").focus();return;}
+ const record={
+  id:Date.now(),timestamp:new Date().toISOString(),nama:name,kelas:studentClass||"-",
+  kasus:state.case?.title||"-",algoritma:state.algorithm||"",
+  flowchart:state.flow.map(n=>({type:n.type,text:n.text||n.label||"",branch:n.branch||"main",parentDecision:n.parentDecision??null})),
+  pseudocode:state.pseudo||"",skorFlowchart:state.flowScore||0,skorPseudocode:state.pseudoScore||0,
+  skorAkhir:Math.round((state.flowScore*.35)+(state.pseudoScore*.65)),refleksi:reflection
+ };
+ try{
+  localStorage.setItem(STORAGE_KEY,JSON.stringify([...getSavedRecords(),record]));
+ }catch(e){console.warn("Local storage gagal",e);}
+
+ if(cloudConfigured()){
+  if(!sessionId) await startCloudSession();
+  await flushActivityQueue();
+  if(sessionId){
+   const {error}=await supabaseClient.from("submissions").insert({
+    session_id:sessionId,participant_code:participantId(),student_name:name,student_class:studentClass||"-",
+    case_id:state.case?.id||null,case_title:state.case?.title||"-",algorithm:state.algorithm||"",
+    flowchart:record.flowchart,pseudocode:state.pseudo||"",flow_score:state.flowScore||0,pseudo_score:state.pseudoScore||0,
+    final_score:record.skorAkhir,reflection
+   });
+   if(error){showInlineFeedback("saveStatus","⚠️ Data lokal tersimpan, tetapi pengiriman ke database gagal. Periksa koneksi/konfigurasi Supabase.","warn");console.warn(error);}
+   else {await logActivity("REFLECTION_SAVED",{student_name:name,student_class:studentClass||"-",reflection,final_score:record.skorAkhir,snapshot:currentSnapshot()});showInlineFeedback("saveStatus","✅ Refleksi dan seluruh aktivitas berhasil dikirim ke database.","good");}
+  } else {
+   showInlineFeedback("saveStatus","⚠️ Refleksi tersimpan secara lokal, tetapi sesi cloud gagal dibuat. Periksa koneksi dan kebijakan INSERT tabel sessions di Supabase.","warn");
+  }
+ }else{
+  showInlineFeedback("saveStatus",`✅ Refleksi tersimpan di perangkat ini. Supabase belum dikonfigurasi.`,"warn");
+ }
+ showSavedData();
+}
+
+function deleteRecord(id){
+ if(!confirm("Hapus data refleksi ini?"))return;
+ const records=getSavedRecords().filter(r=>r.id!==id);
+ localStorage.setItem(STORAGE_KEY,JSON.stringify(records));
+ showInlineFeedback("saveStatus","Data berhasil dihapus dari browser ini.","good");
+ showSavedData();
+}
+
+function finish(){
+ logActivity("SESSION_FINISHED",{final_score:Math.round((state.flowScore*.35)+(state.pseudoScore*.65)),snapshot:currentSnapshot()});
+ $("score").textContent=Math.round((state.flowScore*.35)+(state.pseudoScore*.65));
+ $("scoreText").innerHTML=`Flowchart: <b>${state.flowScore}/100</b><br>Pseudocode: <b>${state.pseudoScore}/100</b><br><br>Skor ini adalah umpan balik belajar, bukan satu-satunya ukuran pemahaman.`;
+ show(5);
+}
+function resetLab(){state={case:null,algorithm:"",flow:[],pseudo:"",flowScore:0,pseudoScore:0,currentTest:null};sessionId=null;activityQueue=[];show(0)}
+init();
+
+function goBackPage(){if(window.history.length>1){window.history.back()}else{const msg=document.createElement("div");msg.className="feedback warn";msg.style.position="fixed";msg.style.top="64px";msg.style.left="18px";msg.style.zIndex="10000";msg.textContent="Tidak ada halaman sebelumnya untuk kembali.";document.body.appendChild(msg);setTimeout(()=>msg.remove(),2200)}}
+</script>
+</body>
+</html>
